@@ -71,14 +71,14 @@ class _TableCalendarScreenState extends State<TableCalendarScreen> {
                   ),
                 );
               }).toList();
-              if (day == _selectedDay) {
+              // if (day == _selectedDay) {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: dots,
                 );
-              } else {
-                return null;
-              }
+              // } else {
+              //   return null;
+              // }
             },
           ),
 

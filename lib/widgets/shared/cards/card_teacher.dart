@@ -35,15 +35,17 @@ class _CardTeacherState extends State<CardTeacher> {
 
   Future<void> fetchCourseData() async {
     List<CourseModel> courseData = (await teacherTaskNamesBD!.getCourseData());
-    setState(() {
-      courseNames?.clear();
-      courseNames = {}; // Inicializa el mapa
-      for (var course in courseData) {
-        int idCourse = course.idCourse!;
-        String nameCourse = course.nameCourse!;
-        courseNames![idCourse] = nameCourse;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        courseNames?.clear();
+        courseNames = {}; // Inicializa el mapa
+        for (var course in courseData) {
+          int idCourse = course.idCourse!;
+          String nameCourse = course.nameCourse!;
+          courseNames![idCourse] = nameCourse;
+        }
+      });
+    }
   }
 
   @override

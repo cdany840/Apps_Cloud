@@ -86,11 +86,17 @@ class CustomTextFormField extends StatelessWidget {
     return TextFormField(
       decoration: InputDecoration(
         label: Text(text),
-        border: const OutlineInputBorder(  
+        labelStyle: const TextStyle(color: Colors.white),
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.white
           )
-        )
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        ),
       ),
       controller: controller,
       maxLines: maxLines,
@@ -124,7 +130,7 @@ class CustomFloatingActionButton extends StatelessWidget {
   }
 }
 
-// * 
+// * ElevatedButton
 class CustomElevatedButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;

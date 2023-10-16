@@ -68,10 +68,35 @@ class _ButtonsUpDelState extends State<ButtonsUpDel> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          widget.teacherTaskBD.delete(widget.tableName, widget.model!, widget.id).then((value) {
-                            Navigator.pop(context);
-                            GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
-                          });                        
+                          try {
+                            widget.teacherTaskBD.delete(widget.tableName, widget.model!, widget.id).then((value) {
+                              Navigator.pop(context);
+                              GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
+                            });
+                          } catch (e) {
+                            showDialog(
+                              context: context, 
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Relaciones foráneas'),
+                                  content: const Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text('Hay una relación con otro resgistro, borra primero el otro registro.'),
+                                    ]
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('Aceptar'),
+                                      onPressed: (){
+                                        Navigator.of(context).pop();
+                                      }, 
+                                    )
+                                  ],
+                                );
+                              },
+                            );
+                          }
                         }, 
                         child: const Text('Si.')
                       ),

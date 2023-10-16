@@ -33,13 +33,15 @@ class _AddTeachTaskState extends State<AddTeachTask> {
 
   Future<void> fetchCourseData() async {
     List<TeacherModel> teacherData = await teacherTaskBD!.getTeacherData();
-    setState(() {
-      dropDownTeacherValues.clear();
-      for (var teacher in teacherData) {
-        String nameTeacher = teacher.nameTeacher!;
-        dropDownTeacherValues.add(nameTeacher);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        dropDownTeacherValues.clear();
+        for (var teacher in teacherData) {
+          String nameTeacher = teacher.nameTeacher!;
+          dropDownTeacherValues.add(nameTeacher);
+        }
+      });
+    }
   }
 
   @override
@@ -125,37 +127,62 @@ class _AddTeachTaskState extends State<AddTeachTask> {
           CustomElevatedButton(
             text: "Save Task",
             onPressed: () async {
-              scheduleNotification(txtConName.text, txtConDsc.text, DateFormat('yyyy-MM-dd').parse(txtConDateRem.text));
-              showNotification(txtConName.text, 'Tarea Programada');
+              if (txtConName.text.isEmpty || txtConDsc.text.isEmpty || txtConDateExp.text.isEmpty || txtConDateRem.text.isEmpty || dropDownValueTask == null || dropDownValueTeacher == null) {
+                showDialog(
+                  context: context, 
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Campos'),
+                      content: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text('Los campos no pueden estar vacíos.'),
+                        ]
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Aceptar'),
+                          onPressed: (){
+                            Navigator.of(context).pop();
+                          }, 
+                        )
+                      ],
+                    );
+                  },
+                );
+              } else {
+                scheduleNotification(txtConName.text, txtConDsc.text, DateFormat('yyyy-MM-dd').parse(txtConDateRem.text));
+                showNotification(txtConName.text, 'Tarea Programada');
 
-              GlobalValues.flagTask.value = !GlobalValues.flagTask.value; // ? Debería implementarse en los inserts
-              final isInsert = widget.taskModel == null;
-              const tableName = 'tblTask';
-              final operation = isInsert ? 'Inserción' : 'Actualización';
-    
-              final result = isInsert
-                    ? await teacherTaskBD!.insert(tableName, {
-                        'nameTask': txtConName.text,
-                        'dscTask': txtConDsc.text,
-                        'dateExp': txtConDateExp.text,
-                        'dateRem': txtConDateRem.text,
-                        'doing': int.parse(dropDownValueTask!.substring(0, 1)),
-                        'idTeacher': dropDownValueTeacher,
-                      })
-                    : await teacherTaskBD!.update(tableName, {
-                        'idTask': widget.taskModel!.idTask,
-                        'nameTask': txtConName.text,
-                        'dscTask': txtConDsc.text,
-                        'dateExp': txtConDateExp.text,
-                        'dateRem': txtConDateRem.text,
-                        'doing': int.parse(dropDownValueTask!.substring(0, 1)),
-                      },
-                      'idTask'
-                      );
-    
-              final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-              Navigator.pop(context);
+                GlobalValues.flagTask.value = !GlobalValues.flagTask.value; // ? Debería implementarse en los inserts
+                final isInsert = widget.taskModel == null;
+                const tableName = 'tblTask';
+                final operation = isInsert ? 'Inserción' : 'Actualización';
+      
+                final result = isInsert
+                      ? await teacherTaskBD!.insert(tableName, {
+                          'nameTask': txtConName.text,
+                          'dscTask': txtConDsc.text,
+                          'dateExp': txtConDateExp.text,
+                          'dateRem': txtConDateRem.text,
+                          'doing': int.parse(dropDownValueTask!.substring(0, 1)),
+                          'idTeacher': dropDownValueTeacher,
+                        })
+                      : await teacherTaskBD!.update(tableName, {
+                          'idTask': widget.taskModel!.idTask,
+                          'nameTask': txtConName.text,
+                          'dscTask': txtConDsc.text,
+                          'dateExp': txtConDateExp.text,
+                          'dateRem': txtConDateRem.text,
+                          'doing': int.parse(dropDownValueTask!.substring(0, 1)),
+                        },
+                        'idTask'
+                        );
+      
+                final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                Navigator.pop(context);
+              }
             },
           )
         ],
@@ -201,7 +228,7 @@ class DateInputField extends StatelessWidget {
         DateTime? pickedDate = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
-          firstDate: DateTime(2023),
+          firstDate: DateTime.now(),
           lastDate: DateTime(2100),
         );
         if (pickedDate != null) {

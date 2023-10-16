@@ -38,13 +38,15 @@ class _AddTeacherState extends State<AddTeacher> {
 
   Future<void> fetchCourseData() async {
     List<CourseModel> courseData = await teacherTaskBD!.getCourseData();
-    setState(() {
-      dropDownValues.clear();
-      for (var course in courseData) {
-        String nameCourse = course.nameCourse!;
-        dropDownValues.add(nameCourse);
-      }
-    });
+    if (mounted) {
+      setState(() {
+        dropDownValues.clear();
+        for (var course in courseData) {
+          String nameCourse = course.nameCourse!;
+          dropDownValues.add(nameCourse);
+        }
+      });
+    }
   }
 
   onChanged(value) {
@@ -83,28 +85,53 @@ class _AddTeacherState extends State<AddTeacher> {
         CustomElevatedButton(
           text: "Save Teacher",
           onPressed: () async {
-            final isInsert = widget.teacherModel == null;
-            const tableName = 'tblTeacher';
-            final operation = isInsert ? 'Inserción' : 'Actualización';
-
-            final result = isInsert
-                  ? await teacherTaskBD!.insert(tableName, {
-                      'nameTeacher': txtConTeacher.text,
-                      'email': txtConEmail.text,
-                      'idCourse': dropDownValue!,
-                    })
-                  : await teacherTaskBD!.update(tableName, {
-                      'idTeacher': widget.teacherModel!.idTeacher,
-                      'nameTeacher': txtConTeacher.text,
-                      'email': txtConEmail.text,
-                      'idCourse': dropDownValue,
-                      },
-                      'idTeacher'
+            if (txtConEmail.text.isEmpty || txtConTeacher.text.isEmpty || dropDownValue == null) {
+              showDialog(
+                context: context, 
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Campos'),
+                    content: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text('Los campos no pueden estar vacíos'),
+                      ]
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Aceptar'),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        }, 
+                      )
+                    ],
                   );
+                },
+              );
+            } else {              
+              final isInsert = widget.teacherModel == null;
+              const tableName = 'tblTeacher';
+              final operation = isInsert ? 'Inserción' : 'Actualización';
 
-            final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-            Navigator.pop(context);
+              final result = isInsert
+                    ? await teacherTaskBD!.insert(tableName, {
+                        'nameTeacher': txtConTeacher.text,
+                        'email': txtConEmail.text,
+                        'idCourse': dropDownValue!,
+                      })
+                    : await teacherTaskBD!.update(tableName, {
+                        'idTeacher': widget.teacherModel!.idTeacher,
+                        'nameTeacher': txtConTeacher.text,
+                        'email': txtConEmail.text,
+                        'idCourse': dropDownValue,
+                        },
+                        'idTeacher'
+                    );
+
+              final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+              Navigator.pop(context);
+            }
           },
         ),
         Expanded(
@@ -147,3 +174,4 @@ class _AddTeacherState extends State<AddTeacher> {
     );
   }
 }
+

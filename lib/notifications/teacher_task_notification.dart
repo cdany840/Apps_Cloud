@@ -8,7 +8,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 // Método que inicializa el objeto de notificaciones
 Future<void> initNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
+      AndroidInitializationSettings('icon_app');
 
   const DarwinInitializationSettings initializationSettingsIOS =
       DarwinInitializationSettings();
@@ -24,31 +24,37 @@ Future<void> initNotifications() async {
 // Método que muestra la notificación
 Future<void> showNotification(String title, String body) async {
   const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails(
+  AndroidNotificationDetails(
     'IDRecor',
     'Recordatorio',
     importance: Importance.max,
     priority: Priority.high,
+    icon: 'icon_app'
   );
 
   const NotificationDetails notificationDetails = NotificationDetails(
     android: androidNotificationDetails,
   );
 
-  await flutterLocalNotificationsPlugin.show(
-    1,
-    title,
-    body,
-    notificationDetails,
-  );
+  // try {
+    await flutterLocalNotificationsPlugin.show(
+      1,
+      title.isEmpty ? "Tarea" : title,
+      body.isEmpty ? "Recordatorio progrado." : body,
+      notificationDetails,
+    );
+  // ignore: empty_catches
+  // } catch (e) {
+    
+  // }
 }
 
 // Método para programar una notificación en una fecha específica
 Future<void> scheduleNotification(
-    String title, String body, DateTime scheduledDate) async {
+  String title, String body, DateTime scheduledDate) async {
   final AndroidNotificationDetails androidNotificationDetails =
       // ignore: prefer_const_constructors
-      AndroidNotificationDetails(
+  AndroidNotificationDetails(
     'IDRecor',
     'Recordatorio',
     importance: Importance.max,

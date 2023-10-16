@@ -38,15 +38,17 @@ class _CardTaskTeacherState extends State<CardTaskTeacher> {
 
   Future<void> fetchCourseData() async {
     List<TeacherModel> teacherData = (await teacherTaskNamesBD!.getTeacherData());
-    setState(() {
-      teacherNames?.clear();
-      teacherNames = {}; // Inicializa el mapa
-      for (var teacher in teacherData) {
-        int idTeacher = teacher.idTeacher!;
-        String nameTeacher = teacher.nameTeacher!;
-        teacherNames![idTeacher] = nameTeacher; // Usar idTeacher como clave
-      }
-    });
+    if (mounted) {
+      setState(() {
+        teacherNames?.clear();
+        teacherNames = {}; // Inicializa el mapa
+        for (var teacher in teacherData) {
+          int idTeacher = teacher.idTeacher!;
+          String nameTeacher = teacher.nameTeacher!;
+          teacherNames![idTeacher] = nameTeacher; // Usar idTeacher como clave
+        }
+      });
+    }
   }
 
   @override
@@ -85,27 +87,25 @@ class _CardTaskTeacherState extends State<CardTaskTeacher> {
             builder: (context) => const AddTeacherTask(),
             screen: 'taskTeacher',
             data: widget.taskModel,
-            checkbox: widget.taskModel.doing! == 1 
-            ? Checkbox(
-                value: stateCheck,
-                onChanged: (value) async {
-                  await widget.teacherTaskBD!.update('tblTask', {
-                      'idTask': widget.taskModel.idTask,
-                      'nameTask': widget.taskModel.nameTask,
-                      'dscTask': widget.taskModel.dscTask,
-                      'dateExp': widget.taskModel.dateExp,
-                      'dateRem': widget.taskModel.dateRem,
-                      'doing': 2,
-                    },
-                    'idTask'
-                  );
+            checkbox: Checkbox(
+              value: stateCheck,
+              onChanged: (value) async {
+                await widget.teacherTaskBD!.update('tblTask', {
+                    'idTask': widget.taskModel.idTask,
+                    'nameTask': widget.taskModel.nameTask,
+                    'dscTask': widget.taskModel.dscTask,
+                    'dateExp': widget.taskModel.dateExp,
+                    'dateRem': widget.taskModel.dateRem,
+                    'doing': 2,
+                  },
+                  'idTask'
+                );
 
-                  GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
+                GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
 
-                  stateCheck = value!;
-                },
-              ) 
-            : const SizedBox( height: 35 ), SizedBox: null,
+                stateCheck = value!;
+              },
+            ), SizedBox: null, 
           )
         ],
       ),

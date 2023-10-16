@@ -42,24 +42,49 @@ class _AddCourseState extends State<AddCourse> {
         CustomElevatedButton(
           text: "Save Course",
           onPressed: () async {
-            final isInsert = widget.courseModel == null;
-            const tableName = 'tblCourse';
-            final operation = isInsert ? 'Inserción' : 'Actualización';
-
-            final result = isInsert
-                  ? await teacherTaskBD!.insert(tableName, {
-                      'nameCourse': txtConCourse.text,
-                    })
-                  : await teacherTaskBD!.update(tableName, {
-                      'idCourse': widget.courseModel!.idCourse,
-                      'nameCourse': txtConCourse.text,
-                      },
-                      'idCourse'
+            if (txtConCourse.text.isEmpty) {
+              showDialog(
+                context: context, 
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Campos'),
+                    content: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text('Los campos no pueden estar vacíos'),
+                      ]
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Aceptar'),
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        }, 
+                      )
+                    ],
                   );
+                },
+              );
+            } else {
+              final isInsert = widget.courseModel == null;
+              const tableName = 'tblCourse';
+              final operation = isInsert ? 'Inserción' : 'Actualización';
 
-            final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-            Navigator.pop(context);
+              final result = isInsert
+                    ? await teacherTaskBD!.insert(tableName, {
+                        'nameCourse': txtConCourse.text,
+                      })
+                    : await teacherTaskBD!.update(tableName, {
+                        'idCourse': widget.courseModel!.idCourse,
+                        'nameCourse': txtConCourse.text,
+                        },
+                        'idCourse'
+                    );
+
+              final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+              Navigator.pop(context);
+            }
           },
         ),
         Expanded(
