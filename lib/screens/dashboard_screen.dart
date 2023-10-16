@@ -57,6 +57,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Navigator.pushNamed(context, '/onboarding');
             },
           ),
+          CustomListTile(
+            routeAsset: 'assets/icons/icon_movie.png',
+            title: 'Movies', 
+            subtitle: 'Thes best movies',
+            onTap: () {
+              Navigator.pushNamed(context, '/popular');
+            },
+          ),
+          CustomListTile(
+            routeAsset: 'assets/icons/icon_teacher_task.png',
+            title: 'Teacher Task',
+            subtitle: 'See Pending Tasks',
+            onTap: () {
+              Navigator.pushNamed(context, '/teacherTask');
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: DayNightSwitcher(

@@ -24,8 +24,7 @@ class _FruitApp extends State<FruitApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           elevation: 0, //(79 R,107 G,178 B,255 A)
           backgroundColor: const Color.fromARGB(255, 230, 185, 111), //rgba(230,185,111,255)
@@ -201,7 +200,6 @@ class _FruitApp extends State<FruitApp> {
             ),
           ],
         ),
-      ),
     );
   }
 }

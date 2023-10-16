@@ -1,0 +1,74 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+
+// Instancia del package
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+// Método que inicializa el objeto de notificaciones
+Future<void> initNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
+// Método que muestra la notificación
+Future<void> showNotification(String title, String body) async {
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+    'IDRecor',
+    'Recordatorio',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  const NotificationDetails notificationDetails = NotificationDetails(
+    android: androidNotificationDetails,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    1,
+    title,
+    body,
+    notificationDetails,
+  );
+}
+
+// Método para programar una notificación en una fecha específica
+Future<void> scheduleNotification(
+    String title, String body, DateTime scheduledDate) async {
+  final AndroidNotificationDetails androidNotificationDetails =
+      // ignore: prefer_const_constructors
+      AndroidNotificationDetails(
+    'IDRecor',
+    'Recordatorio',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  final NotificationDetails notificationDetails = NotificationDetails(
+    android: androidNotificationDetails,
+  );
+
+  // Programar la notificación en la fecha especificada
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    1,
+    title,
+    body,
+    tz.TZDateTime.from(scheduledDate, tz.local),
+    notificationDetails,
+    // ignore: deprecated_member_use
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+  );
+}

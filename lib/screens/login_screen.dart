@@ -11,24 +11,29 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isChecked = false;
+  TextEditingController txtConUser = TextEditingController();
+  TextEditingController txtConPass = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController txtConUser = TextEditingController();
-    TextEditingController txtConPass = TextEditingController();
+    
     final txtUser = CustomTextField(
-      controller: txtConUser
+      controller: txtConUser,
+      textInputAction: TextInputAction.next,
+      labelText: 'User',
     );
     final txtPass = CustomTextField(
-      controller: txtConPass
+      controller: txtConPass,
+      labelText: 'Pass',
+      obscureText: true,
     );
 
     final imgLogo = Container(
       width: 160,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage('https://cdn-icons-png.flaticon.com/512/1090/1090806.png')
-          // image: NetworkImage('https://static.vecteezy.com/system/resources/previews/022/911/694/large_2x/cute-cartoon-burger-icon-free-png.png')
+          image: AssetImage('assets/icons/icon_spider_user.png')
+          // NetworkImage('https://cdn-icons-png.flaticon.com/512/1090/1090806.png')
           )
         ),
     );
@@ -36,7 +41,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final btnEntrar = CustomFloatingActionButton(
       icon: Icons.login,
       text: 'Login',
-      onPressed: () => Navigator.pushNamed(context, '/dash')
+      onPressed: () {
+        if(txtConUser.text.isEmpty && txtConPass.text.isEmpty){
+          CustomToast.show('Empty User and Pass');          
+        } else if (txtConPass.text.isEmpty) {
+            CustomToast.show('Empty Pass');
+          } else if (txtConUser.text.isEmpty) {
+              CustomToast.show('Empty User');
+            } else {
+                Navigator.pushNamed(context, '/dash');
+              }
+      }
     );
 
     final checkSesion = Checkbox(
@@ -56,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: const BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: NetworkImage('https://www.xtrafondos.com/wallpapers/vertical/el-hombre-arana-de-cabeza-7051.jpg')
+            image: AssetImage('assets/fondo.webp')
             )
         ),
         child: Padding(
@@ -77,9 +92,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   // padding: const EdgeInsets.symmetric(horizontal: 30),
                   children: [
-                    txtUser,
+                    CustomGestureDetector(
+                      child: txtUser,
+                    ),
                     const SizedBox(height: 10),
-                    txtPass
+                    CustomGestureDetector(
+                      child: txtPass,
+                    ),
                   ],
                 ),
               ),
@@ -93,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           btnEntrar,
           checkSesion,
-          const Text('Recordar')
+          const Text('Recordar', style: TextStyle(color: Colors.white),)
         ],
       )
       // FloatingActionButtonLocation.centerDocked,

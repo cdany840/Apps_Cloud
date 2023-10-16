@@ -2,7 +2,7 @@ class TaskModel {
   int? idTask;
   String? nameTask;
   String? dscTask;
-  bool? sttTask;
+  String? sttTask;
 
   TaskModel({this.idTask, this.nameTask, this.dscTask, this.sttTask});
 

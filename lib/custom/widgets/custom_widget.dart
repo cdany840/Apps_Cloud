@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // * ListTile
 class CustomListTile extends StatelessWidget {
@@ -30,20 +31,69 @@ class CustomListTile extends StatelessWidget {
 // * TextField
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
+  final TextInputAction? textInputAction;
+  final bool? obscureText;
+  final String labelText;
 
   const CustomTextField({
     super.key,
     required this.controller,
+    this.textInputAction,
+    this.obscureText,
+    required this.labelText,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      obscureText: true,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
+      textInputAction: textInputAction,
+      style: const TextStyle(color: Colors.white),
+      obscureText: obscureText ?? false,
+      decoration: InputDecoration(
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        ),
+        labelText: labelText,
+        labelStyle: const TextStyle(color: Colors.white)
       ),
+    );
+  }
+}
+
+// * TextFormField
+class CustomTextFormField extends StatelessWidget {
+  final TextEditingController controller;
+  final String text;
+  final int? maxLines;
+
+  const CustomTextFormField({
+    super.key,
+    required this.controller,
+    required this.text,
+    this.maxLines,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        label: Text(text),
+        border: const OutlineInputBorder(  
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        )
+      ),
+      controller: controller,
+      maxLines: maxLines,
     );
   }
 }
@@ -70,6 +120,100 @@ class CustomFloatingActionButton extends StatelessWidget {
       foregroundColor: Colors.white,
       backgroundColor: const Color.fromARGB(255, 234, 111, 166),
       onPressed: onPressed
+    );
+  }
+}
+
+// * 
+class CustomElevatedButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+
+  const CustomElevatedButton({
+    super.key,
+    required this.text,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all( const Color.fromARGB(255, 234, 111, 166) ),
+        foregroundColor: MaterialStateProperty.all( Colors.white ),
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // Cambia el radio de las esquinas
+        )),
+      ),
+      onPressed: onPressed,
+      child: Text(text),
+    );
+  }
+}
+
+// * Toast - https://pub.dev/packages/fluttertoast
+class CustomToast{
+  static void show(String mess) {
+    Fluttertoast.showToast(
+      msg: mess,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black38,
+      textColor: Colors.white,
+      fontSize: 16.0
+    );
+  }
+}
+
+// * GestureDetector
+class CustomGestureDetector extends StatelessWidget {
+  final Widget child;
+
+  const CustomGestureDetector({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: child,
+    );
+  }
+}
+
+// * DropdownButton
+class CustomDropdownButton extends StatelessWidget {
+  const CustomDropdownButton({
+    super.key,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.hint
+  });
+
+  final String? value;
+  final String? hint;
+  final List<String> items;
+  final ValueChanged? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton(
+      isExpanded: true,
+      hint: Text(hint ?? "Select"),
+      value: value,
+      items: items.map(
+        (status) => DropdownMenuItem(
+          value: status,
+          child: Center(child: Text(status))
+        )
+      ).toList(),
+      onChanged: onChanged
     );
   }
 }
