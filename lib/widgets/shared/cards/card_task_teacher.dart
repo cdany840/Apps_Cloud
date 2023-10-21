@@ -73,7 +73,7 @@ class _CardTaskTeacherState extends State<CardTaskTeacher> {
                 Text(widget.taskModel.dscTask!),
                 Text("Expira: ${widget.taskModel.dateExp!}"),
                 Text("Remember: ${widget.taskModel.dateRem!}"),
-                Text("State: ${widget.taskModel.doing! == 1 ? "To Do" : "Doing"}"),
+                Text("State: ${widget.taskModel.doing! == 1 ? "Doing" : "Done"}"),
                 Text( "Teacher: ${teacherNames?[widget.taskModel.idTeacher] ?? 'Pendiente'}" )
               ],
             ),
@@ -84,6 +84,7 @@ class _CardTaskTeacherState extends State<CardTaskTeacher> {
             tableName: "tblTask",
             id: "idTask",
             model: widget.taskModel.idTask,
+            idForeignKey: widget.taskModel.idTeacher,
             builder: (context) => const AddTeacherTask(),
             screen: 'taskTeacher',
             data: widget.taskModel,
@@ -96,14 +97,14 @@ class _CardTaskTeacherState extends State<CardTaskTeacher> {
                     'dscTask': widget.taskModel.dscTask,
                     'dateExp': widget.taskModel.dateExp,
                     'dateRem': widget.taskModel.dateRem,
-                    'doing': 2,
+                    'doing': widget.taskModel.doing == 1 ? 2 : 1,
                   },
                   'idTask'
                 );
 
                 GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
 
-                stateCheck = value!;
+                stateCheck = !value!;
               },
             ), SizedBox: null, 
           )

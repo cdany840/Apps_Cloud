@@ -65,7 +65,7 @@ class _CardTeacherState extends State<CardTeacher> {
               children: [
                 Text(widget.teacherModel.nameTeacher!),
                 Text(widget.teacherModel.email!),
-                Text( "Teacher: ${courseNames?[widget.teacherModel.idCourse] ?? 'Pendiente'}" )
+                Text( "Course: ${courseNames?[widget.teacherModel.idCourse] ?? 'Pendiente'}" )
               ],
             ),
           ),
@@ -73,7 +73,8 @@ class _CardTeacherState extends State<CardTeacher> {
             teacherTaskBD: widget.teacherTaskBD!, 
             tableName: "tblTeacher",
             id: "idTeacher",
-            model: widget.teacherModel.idCourse,
+            model: widget.teacherModel.idTeacher,
+            idForeignKey: widget.teacherModel.idTeacher,
             builder: (context) => const AddTeacherTask(),
             screen: 'teacher',
             data: widget.teacherModel, 

@@ -62,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             title: 'Movies', 
             subtitle: 'Thes best movies',
             onTap: () {
-              Navigator.pushNamed(context, '/popular');
+              Navigator.pushNamed(context, '/popular', arguments: {'screen': 'popular'});
             },
           ),
           CustomListTile(

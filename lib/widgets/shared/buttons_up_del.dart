@@ -10,6 +10,7 @@ class ButtonsUpDel extends StatefulWidget {
     required this.id,
     required this.builder,
     required this.screen,
+    required this.idForeignKey,
     this.model,
     this.data,
     this.checkbox, required SizedBox 
@@ -22,17 +23,37 @@ class ButtonsUpDel extends StatefulWidget {
   final String screen;
   final dynamic model;
   final dynamic data;
-  final Widget? checkbox; 
+  final Widget? checkbox;
+  final dynamic idForeignKey;
 
   @override
   State<ButtonsUpDel> createState() => _ButtonsUpDelState();
 }
 
 class _ButtonsUpDelState extends State<ButtonsUpDel> {
+  bool foreignKey = false;
+
   @override
   void initState() {
     super.initState();
     widget.teacherTaskBD = TeacherTaskBD();
+    initForeignKey();
+  }
+
+  Future<void> initForeignKey() async {
+    setState(() {
+      
+    });
+    switch (widget.screen) {
+      case "course":
+        foreignKey = await widget.teacherTaskBD.getForeignKey("tblTeacher", "idCourse", widget.idForeignKey);    
+        break;
+      case "teacher":
+        foreignKey = await widget.teacherTaskBD.getForeignKey("tblTask", "idTeacher", widget.idForeignKey);
+        break;
+      default:
+        foreignKey = true;
+    }
   }
 
   @override
@@ -68,12 +89,26 @@ class _ButtonsUpDelState extends State<ButtonsUpDel> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          try {
+                          Future<void> getForeignKey() async {
+                            switch (widget.screen) {
+                              case "course":
+                                foreignKey = await widget.teacherTaskBD.getForeignKey("tblTeacher", "idCourse", widget.model);
+                                break;
+                              case "teacher":
+                                foreignKey = await widget.teacherTaskBD.getForeignKey("tblTask", "idTeacher", widget.model);
+                                break;
+                              default:
+                                foreignKey = true;
+                            }
+                          }
+                          getForeignKey();
+                          if (foreignKey) {
                             widget.teacherTaskBD.delete(widget.tableName, widget.model!, widget.id).then((value) {
                               Navigator.pop(context);
                               GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
                             });
-                          } catch (e) {
+                          } else {
+                            Navigator.pop(context);
                             showDialog(
                               context: context, 
                               builder: (context) {

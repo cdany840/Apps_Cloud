@@ -54,6 +54,7 @@ class _CardCoursesState extends State<CardCourses> {
             tableName: "tblCourse",
             id: "idCourse",
             model: widget.courseModel.idCourse,
+            idForeignKey: widget.courseModel.idCourse,
             builder: (context) => const AddTeacherTask(),
             screen: 'course',
             data: widget.courseModel,

@@ -127,4 +127,14 @@ class TeacherTaskBD {
     return result.map((task) => TaskModel.fromMap(task)).toList();
   }
 
+  Future<bool> getForeignKey(String tblName, String colForKey, int valForKey) async {
+    final connection = await getDatabase;
+    final List<Map<String, dynamic>> result = await connection!.query(tblName, 
+      where: '$colForKey = ?',
+      whereArgs: [valForKey] 
+    );
+
+    return result.isEmpty;
+  }
+
 }

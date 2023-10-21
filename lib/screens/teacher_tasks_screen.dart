@@ -27,8 +27,8 @@ class _TeacherTaskScreenState extends State<TeacherTaskScreen> {
 
   String dropDownValue = "3.- All";
   List<String> dropDownValues = [
-      "1.- To Do",
-      "2.- Doing",
+      "1.- Doing",
+      "2.- Done",
       "3.- All"
   ];
 

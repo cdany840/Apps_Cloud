@@ -33,7 +33,7 @@ class PopularModel {
         overview: map["overview"],
         popularity: map["popularity"]?.toDouble(),
         posterPath: map["poster_path"] ?? '',
-        releaseDate: DateTime.parse(map["release_date"]),
+        releaseDate: DateTime.parse(map["release_date"] ?? '2023-10-21'),
         title: map["title"],    
         voteAverage: map["vote_average"]?.toDouble(),
         voteCount: map["vote_count"],

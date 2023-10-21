@@ -25,8 +25,8 @@ class _AddTeachTaskState extends State<AddTeachTask> {
 
   String? dropDownValueTask;
   List<String> dropDownTaskValues = [
-    "1.- To Do",
-    "2.- Doing"
+    "1.- Doing",
+    "2.- Done"
   ];
   int? dropDownValueTeacher;
   List<String> dropDownTeacherValues = [];
@@ -54,7 +54,7 @@ class _AddTeachTaskState extends State<AddTeachTask> {
       txtConDsc.text = widget.taskModel!.dscTask!; 
       txtConDateExp.text = widget.taskModel!.dateExp!; 
       txtConDateRem.text = widget.taskModel!.dateRem!; 
-      dropDownValueTask = widget.taskModel!.doing! == 1 ? "1.- To Do" : "2.- Doing"; 
+      dropDownValueTask = widget.taskModel!.doing! == 1 ? "1.- Doing" : "2.- Done"; 
       dropDownValueTeacher = widget.taskModel!.idTeacher!;
     }
   }
@@ -93,6 +93,7 @@ class _AddTeachTaskState extends State<AddTeachTask> {
           DateInputField(
             controller: txtConDateExp,
             label: "Task Expiration",
+            firstDate: DateTime.now(),
             onDateSelected: (DateTime selectedDate) {
               
             },
@@ -101,6 +102,7 @@ class _AddTeachTaskState extends State<AddTeachTask> {
           DateInputField(
             controller: txtConDateRem,
             label: "Task Reminder",
+            firstDate: DateTime.now().add(const Duration( days: 1)),
             onDateSelected: (DateTime selectedDate) {
               
             },
@@ -151,8 +153,10 @@ class _AddTeachTaskState extends State<AddTeachTask> {
                   },
                 );
               } else {
-                scheduleNotification(txtConName.text, txtConDsc.text, DateFormat('yyyy-MM-dd').parse(txtConDateRem.text));
-                showNotification(txtConName.text, 'Tarea Programada');
+                if(widget.taskModel == null) {
+                  scheduleNotification(txtConName.text, txtConDsc.text, DateFormat('yyyy-MM-dd').parse(txtConDateRem.text));
+                  showNotification(txtConName.text, 'Tarea Programada');
+                }
 
                 GlobalValues.flagTask.value = !GlobalValues.flagTask.value; // ? Debería implementarse en los inserts
                 final isInsert = widget.taskModel == null;
@@ -196,11 +200,13 @@ class DateInputField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final Function(DateTime)? onDateSelected;
+  final DateTime firstDate;
 
   const DateInputField({
     super.key, 
     required this.controller,
     required this.label,
+    required this.firstDate,
     this.onDateSelected,
   });
 
@@ -227,8 +233,8 @@ class DateInputField extends StatelessWidget {
       onTap: () async {
         DateTime? pickedDate = await showDatePicker(
           context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
+          initialDate: firstDate,
+          firstDate: firstDate,
           lastDate: DateTime(2100),
         );
         if (pickedDate != null) {

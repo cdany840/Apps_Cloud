@@ -1,21 +1,22 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:pmsn20232/network/popular_model.dart';
+import 'package:pmsn20232/models/popular_model.dart';
 
 class ApiPopular {
-
-  Uri link = Uri.parse('https://api.themoviedb.org/3/movie/popular?api_key=5019e68de7bc112f4e4337a500b96c56&language=es-MX&page=1');
+  Uri link = Uri.parse(
+    'https://api.themoviedb.org/3/movie/popular?api_key=053927dbbf61ee0f685143bc3c08fe2e&language=es-MX&page=1'
+  );
 
   Future<List<PopularModel>?> getAllPopular() async {
-    Response response = await http.get(link);
+    var response = await http.get(link);
     if (response.statusCode == 200) {
       var jsonResult = jsonDecode(response.body)['results'] as List;
-      jsonResult.map((popular) => PopularModel.fromJson(popular)).toList();
+      return jsonResult
+          .map((popular) => PopularModel.fromJson(popular))
+          .toList();
     }
-
     return null;
   }
-
 }
+//flutter pub add http

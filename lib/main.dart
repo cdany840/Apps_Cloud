@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles_app.dart';
+import 'package:pmsn20232/providers/test_provider.dart';
 import 'package:pmsn20232/routes.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
+import 'package:provider/provider.dart';
 
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
@@ -34,15 +36,18 @@ class MyApp extends StatelessWidget{
     return ValueListenableBuilder(
       valueListenable: GlobalValues.flagTheme,
       builder: (context, value, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false, //TODO: Quita la cabecera Debug
-          routes: getRoutes(),
-          theme: value
-                  ? StylesApp().darkTheme()
-                  : StylesApp().lightTheme(),
-          home: GlobalValues.prefsCheck.getBool('checkValue') ?? false
-                ? const DashboardScreen() // * True
-                : const LoginScreen(), // * False
+        return ChangeNotifierProvider(
+          create: (context) => TestProvider(),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false, //TODO: Quita la cabecera Debug
+            routes: getRoutes(),
+            theme: value
+                    ? StylesApp().darkTheme()
+                    : StylesApp().lightTheme(),
+            home: GlobalValues.prefsCheck.getBool('checkValue') ?? false
+                  ? const DashboardScreen() // * True
+                  : const LoginScreen(), // * False
+          )
         );
       }
     );

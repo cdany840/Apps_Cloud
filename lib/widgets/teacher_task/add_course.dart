@@ -81,9 +81,14 @@ class _AddCourseState extends State<AddCourse> {
                         'idCourse'
                     );
 
+              GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
+
               final message = (result > 0) ? '$operation fue exitosa' : 'Ocurrió un error';
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
               Navigator.pop(context);
+              if (operation == "Actualización") {
+                Navigator.pop(context);
+              }
             }
           },
         ),
@@ -102,10 +107,13 @@ class _AddCourseState extends State<AddCourse> {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return CardCourses(
-                            courseModel: widget.courses[index],
-                            teacherTaskBD: teacherTaskBD,
-                          );
+                          if(widget.courseModel == null) {
+                            return CardCourses(
+                              courseModel: widget.courses[index],
+                              teacherTaskBD: teacherTaskBD,
+                            );
+                          }
+                          return null;
                         }                        
                       );
                     } else {
